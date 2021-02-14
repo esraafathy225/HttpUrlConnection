@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -22,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
     HttpURLConnection httpURLConnection;
     URL url;
     InputStream inputStream;
-    String result;
+    String result,finalResult;
+    StringBuffer buffer1=new StringBuffer();
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -74,10 +79,22 @@ public class MainActivity extends AppCompatActivity {
 
                             result=stringBuffer.toString();
 
+
+                            JSONArray array=new JSONArray(result);
+
+                            for(int i=0;i<array.length();i++){
+                                JSONObject object=array.getJSONObject(i);
+                                int id=object.getInt("id");
+                                String name=object.getString("name");
+                                buffer1.append(id+"  "+name+" \n");
+                            }
+
+                            finalResult=buffer1.toString();
+
                             inputStream.close();
                             httpURLConnection.disconnect();
 
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -89,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textView.setText(result);
+                textView.setText(finalResult);
             }
         });
 
